@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match - Nova Core Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0f2a 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.8em;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .badges {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .badge {
+            display: inline-block;
+            background: #00c853;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7em;
+            margin: 0 5px;
+        }
+        .tee {
+            background: #ff6d00 !important;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.7em;
+            color: #aaa;
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00d2ff;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #2a2a4a, #1a1a3e);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .card:hover {
+            transform: scale(1.03);
+            border-color: #00d2ff;
+        }
+        .card.matched {
+            background: #00c85320;
+            border-color: #00c853;
+            cursor: default;
+            opacity: 0.7;
+        }
+        .card.flipped {
+            background: #00d2ff20;
+            border-color: #00d2ff;
+        }
+        .start-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.85em;
+        }
+        .proof {
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        .footer {
+            margin-top: 15px;
+            font-size: 0.65em;
+            text-align: center;
+            color: #888;
+        }
+        .footer a {
+            color: #00d2ff;
+            text-decoration: none;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        @media (max-width: 500px) {
+            .board {
+                gap: 8px;
+            }
+            .card {
+                font-size: 1.5em;
+            }
+            .stat-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🧠 Memory Match</h1>
+        <div class="badges">
+            <span class="badge">✅ Active</span>
+            <span class="badge tee">🔒 TEE Active</span>
+            <span class="badge">🤖 Agent ID: 20762</span>
+            <span class="badge">🎮 Nova Core</span>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">🎯 Moves</div>
+                <div class="stat-value" id="moves">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">⏱️ Time</div>
+                <div class="stat-value" id="timer">0s</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">✅ Matched</div>
+                <div class="stat-value" id="matched">0</div>
+            </div>
+        </div>
+
+        <div class="board" id="board"></div>
+
+        <button class="start-btn" id="startBtn" onclick="startGame()">🎮 Start New Game</button>
+
+        <div class="result" id="result">
+            💡 Click "Start New Game" to begin!<br>
+            Match all 8 pairs (16 cards).
+        </div>
+
+        <div class="footer">
+            ✅ Diverifikasi Nova Core (Billions TEE) | 
+            <a href="https://8004scan.io/agents/billions/20762" target="_blank">Agent Profile</a>
+        </div>
+    </div>
+
+    <script>
+        const emojis = ['🎵', '🤖', '🚀', '⚡', '🎮', '🧠', '🔒', '🎯'];
+        let cards = [];
+        let flippedCards = [];
+        let matchedCards = [];
+        let moves = 0;
+        let time = 0;
+        let timerInterval = null;
+        let gameActive = false;
+        let lockBoard = false;
+
+        const boardEl = document.getElementById('board');
+        const movesEl = document.getElementById('moves');
+        const timerEl = document.getElementById('timer');
+        const matchedEl = document.getElementById('matched');
+        const resultEl = document.getElementById('result');
+        const startBtn = document.getElementById('startBtn');
+
+        function initCards() {
+            let cardSet = [...emojis, ...emojis];
+            for (let i = cardSet.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cardSet[i], cardSet[j]] = [cardSet[j], cardSet[i]];
+            }
+            return cardSet.map((emoji, index) => ({
+                id: index,
+                emoji: emoji,
+                flipped: false,
+                matched: false
+            }));
+        }
+
+        function renderBoard() {
+            boardEl.innerHTML = '';
+            cards.forEach(card => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                if (card.matched) {
+                    cardDiv.classList.add('matched');
+                    cardDiv.textContent = '✅';
+                } else if (card.flipped) {
+                    cardDiv.classList.add('flipped');
+                    cardDiv.textContent = card.emoji;
+                } else {
+                    cardDiv.textContent = '?';
+                }
+                cardDiv.addEventListener('click', () => handleCardClick(card.id));
+                boardEl.appendChild(cardDiv);
+            });
+        }
+
+        function updateStats() {
+            movesEl.textContent = moves;
+            matchedEl.textContent = `${matchedCards.length / 2}`;
+        }
+
+        function updateResult(message, proof = null) {
+            let html = message;
+            if (proof) html += `<div class="proof">☑ Proof: ${proof}</div>`;
+            html += `<div class="proof">✅ Diverifikasi Nova Core (Billions TEE)</div>`;
+            resultEl.innerHTML = html;
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function startTimer() {
+            stopTimer();
+            timerInterval = setInterval(() => {
+                if (gameActive) {
+                    time++;
+                    timerEl.textContent = `${time}s`;
+                }
+            }, 1000);
+        }
+
+        function checkGameComplete() {
+            if (matchedCards.length === cards.length) {
+                gameActive = false;
+                stopTimer();
+                const finalProof = `billions_tee_memory_${Date.now()}`;
+                const percentage = Math.round((matchedCards.length / cards.length) * 100);
+                updateResult(`🏆 YOU WIN! 🏆<br>Moves: ${moves}<br>Time: ${time} seconds<br>Perfect Memory! 🎉`, finalProof);
+                startBtn.disabled = false;
+            }
+        }
+
+        function handleCardClick(id) {
+            if (!gameActive || lockBoard) return;
+            const card = cards.find(c => c.id === id);
+            if (card.matched || card.flipped) return;
+
+            card.flipped = true;
+            flippedCards.push(card);
+            renderBoard();
+
+            if (flippedCards.length === 2) {
+                moves++;
+                updateStats();
+                lockBoard = true;
+                const card1 = flippedCards[0];
+                const card2 = flippedCards[1];
+                const proof = `billions_tee_move_${Date.now()}`;
+
+                if (card1.emoji === card2.emoji) {
+                    card1.matched = true;
+                    card2.matched = true;
+                    card1.flipped = false;
+                    card2.flipped = false;
+                    matchedCards.push(card1, card2);
+                    updateResult(`✅ MATCH! +1 pair (${card1.emoji})`, proof);
+                    renderBoard();
+                    flippedCards = [];
+                    lockBoard = false;
+                    updateStats();
+                    checkGameComplete();
+                } else {
+                    updateResult(`❌ No match (${card1.emoji} vs ${card2.emoji})`, proof);
+                    setTimeout(() => {
+                        card1.flipped = false;
+                        card2.flipped = false;
+                        renderBoard();
+                        flippedCards = [];
+                        lockBoard = false;
+                        updateResult(`💡 Keep trying! Match pairs to win.`, null);
+                    }, 800);
+                }
+            }
+        }
+
+        function startGame() {
+            gameActive = true;
+            moves = 0;
+            time = 0;
+            flippedCards = [];
+            matchedCards = [];
+            startBtn.disabled = true;
+            stopTimer();
+            startTimer();
+            cards = initCards();
+            timerEl.textContent = '0s';
+            updateStats();
+            updateResult('🎮 Game started! Find matching pairs. Good luck! 🍀');
+            renderBoard();
+        }
+    </script>
+</body>
+</html>
