@@ -59,7 +59,7 @@
 
 ## 📱 Screenshot
 
-![Game Screenshot](screenshot.png)
+screenshoot.png
 
 ---
 
