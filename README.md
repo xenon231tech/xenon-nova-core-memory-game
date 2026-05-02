@@ -57,15 +57,17 @@
 
 ---
 
-## 📱 Screenshot
-
-screenshoot.png
-
----
-
 ## 📁 Repository Structure
 
----
+```
+
+memory-game/
+├── index.html          # Game utama
+├── README.md           # Dokumentasi
+├── LICENSE             # MIT License
+└── screenshot.png      # Preview gambar
+
+```
 
 ## 🤝 Kontribusi
 
